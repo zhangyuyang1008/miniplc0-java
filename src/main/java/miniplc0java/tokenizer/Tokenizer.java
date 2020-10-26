@@ -1,13 +1,18 @@
 package miniplc0java.tokenizer;
 
+//尝试修改
 import miniplc0java.error.TokenizeError;
 import miniplc0java.error.ErrorCode;
 import miniplc0java.util.Pos;
 
+import static miniplc0java.error.ErrorCode.IntegerOverflow;
+
 public class Tokenizer {
 
     private StringIter it;
-    String str_token="";
+
+    String token="";
+
     public Tokenizer(StringIter it) {
         this.it = it;
     }
@@ -29,7 +34,6 @@ public class Tokenizer {
             return new Token(TokenType.EOF, "", it.currentPos(), it.currentPos());
         }
 
-        // 查看下一个字符 但是不移动指针
         char peek = it.peekChar();
         if (Character.isDigit(peek)) {
             return lexUInt();
@@ -41,70 +45,91 @@ public class Tokenizer {
     }
 
     private Token lexUInt() throws TokenizeError {
-        // 直到查看下一个字符不是数字为止
-        // 清空字符串
-        str_token="";
+
+        token="";
         //记录初始位置
-        Pos p1=it.ptr;
-        // 前进一个字符，并存储这个字符
-        char peek = it.nextChar();
+        Pos p=it.ptr;
+        char charNow = it.nextChar();
         // 将字符串和字符连接起来
-        str_token+=peek;
+        token+=charNow;
         // 查看下一个字符 但是不移动指针
-        peek = it.peekChar();
-        while(Character.isDigit(peek)){
+        charNow = it.peekChar();
+        while(Character.isDigit(charNow)){
             // 前进一个字符，并存储这个字符
-            peek=it.nextChar();
+            charNow=it.nextChar();
             // 将字符串和字符连接起来
-            str_token+=peek;
+            token+=charNow;
             // 查看下一个字符 但是不移动指针
-            peek = it.peekChar();
+            charNow = it.peekChar();
         }
+        // 请填空：
+        // 解析存储的字符串为无符号整数
         try{
-            // 解析存储的字符串为无符号整数
-            Integer num=Integer.parseInt(str_token);
-            // 解析成功则返回无符号整数类型的token，否则返回编译错误
-            return new Token(TokenType.Uint,num,p1,it.ptr);
-        }catch(Exception e){
-            // Token 的 Value 应填写数字的值
-            throw new TokenizeError(ErrorCode.ExpectedToken,p1);
+            Integer num = Integer.parseInt(token);
+            return new Token(TokenType.Uint, num,p, it.ptr);
         }
+        catch (Exception e){
+            throw new TokenizeError(ErrorCode.IntegerOverflow,p);
+        }
+        // 解析成功则返回无符号整数类型的token，否则返回编译错误
+        //
+        // Token 的 Value 应填写数字的值
     }
 
     private Token lexIdentOrKeyword() throws TokenizeError {
-        // 直到查看下一个字符不是数字或字母为止
-        // 清空字符串
-        str_token="";
+
+        token="";
         //记录初始位置
-        Pos p1=it.ptr;
+        Pos p=it.ptr;
         // 前进一个字符，并存储这个字符
-        char peek = it.nextChar();
+        char charNow = it.nextChar();
         // 将字符串和字符连接起来
-        str_token+=peek;
-        // 查看下一个字符 但是不移动指针
-        peek = it.peekChar();
-        while(Character.isDigit(peek) || Character.isAlphabetic(peek)){
+        token+=charNow;
+
+        // 请填空：
+        // 直到查看下一个字符不是数字或字母为止:
+        charNow = it.peekChar();
+        while(Character.isDigit(charNow) || Character.isAlphabetic(charNow)){
             // 前进一个字符，并存储这个字符
-            peek=it.nextChar();
+            charNow=it.nextChar();
             // 将字符串和字符连接起来
-            str_token+=peek;
+            token+=charNow;
             // 查看下一个字符 但是不移动指针
-            peek = it.peekChar();
+            charNow = it.peekChar();
         }
+        //
+        // 尝试将存储的字符串解释为关键字
+        // -- 如果是关键字，则返回关键字类型的 token
+        // -- 否则，返回标识符
+        // Token 的 Value 应填写标识符或关键字的字符串
         try{
-            // 尝试将存储的字符串解释为关键字
-            // 如果是关键字，则返回关键字类型的token
-            if(isKeepWord(str_token)!=null)
-                return new Token(isKeepWord(str_token),isKeepWord(str_token).toString().toLowerCase(),p1,it.ptr);
-                // 否则，返回标识符
-            else return new Token(TokenType.Ident,str_token,p1,it.ptr);
-        }catch(Exception e){
-            // Token 的 Value 应填写标识符或关键字的字符串
-            throw new TokenizeError(ErrorCode.ExpectedToken,p1);
+            if(token.toLowerCase().equals("begin")){
+                return new Token(TokenType.Begin, "begin", p, it.ptr);
+            }
+            else if (token.toLowerCase().equals("end")){
+                return new Token(TokenType.End, "end", p, it.ptr);
+            }
+            else if (token.toLowerCase().equals("var")){
+                return new Token(TokenType.Var, "var", p, it.ptr);
+            }
+            else if (token.toLowerCase().equals("const")){
+                return new Token(TokenType.Const, "const", p, it.ptr);
+            }
+            else if (token.toLowerCase().equals("print")){
+                return new Token(TokenType.Print, "print", p, it.ptr);
+
+            }
+            else {
+                return new Token(TokenType.Ident, token, p, it.ptr);
+            }
+        }
+        catch (Exception e){
+            throw new TokenizeError(ErrorCode.InvalidInput,it.ptr);
         }
     }
 
     private Token lexOperatorOrUnknown() throws TokenizeError {
+
         switch (it.nextChar()) {
             case '+':
                 try{
@@ -157,30 +182,18 @@ public class Tokenizer {
                 }catch (Exception e){
                     throw new TokenizeError(ErrorCode.ExpectedToken,it.previousPos());
                 }
+
             default:
                 // 不认识这个输入，摸了
                 throw new TokenizeError(ErrorCode.InvalidInput, it.previousPos());
         }
     }
 
+
+
     private void skipSpaceCharacters() {
         while (!it.isEOF() && Character.isWhitespace(it.peekChar())) {
             it.nextChar();
         }
     }
-
-    // 判断是否为保留字
-    private TokenType isKeepWord(String str){
-        if(str.toLowerCase().equals(TokenType.Begin.toString().toLowerCase()))
-            return TokenType.Begin;
-        else if(str.toLowerCase().equals(TokenType.End.toString().toLowerCase()))
-            return TokenType.End;
-        else if(str.toLowerCase().equals(TokenType.Var.toString().toLowerCase()))
-            return TokenType.Var;
-        else if(str.toLowerCase().equals(TokenType.Const.toString().toLowerCase()))
-            return TokenType.Const;
-        else if(str.toLowerCase().equals(TokenType.Print.toString().toLowerCase()))
-            return TokenType.Print;
-        else return null;
-    };
 }
