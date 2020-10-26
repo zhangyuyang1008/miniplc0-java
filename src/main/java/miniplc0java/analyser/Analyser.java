@@ -366,7 +366,7 @@ public final class Analyser {
         // 赋值语句 -> 标识符 '=' 表达式 ';'
 
         // 分析这个语句
-        Token token_now =expect(TokenType.Ident);
+        var token_now =expect(TokenType.Ident);
         // 标识符是什么？
         String name =(String) token_now.getValue();
         var symbol = symbolTable.get(name);
