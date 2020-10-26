@@ -218,9 +218,10 @@ public final class Analyser {
         // 常量声明 -> 常量声明语句*
 
         // 如果下一个 token 是 const 就继续
-        while (nextIf(TokenType.Const) != null) {
+        while (check(TokenType.Const)) {
             // 常量声明语句 -> 'const' 变量名 '=' 常表达式 ';'
 
+            next();
             // 变量名
             var nameToken = expect(TokenType.Ident);
 
@@ -249,9 +250,10 @@ public final class Analyser {
         // 变量声明 -> 变量声明语句*
 
         // 如果下一个 token 是 var 就继续
-        while (nextIf(TokenType.Var) != null) {
+        while (check(TokenType.Var)) {
             // 变量声明语句 -> 'var' 变量名 ('=' 表达式)? ';'
 
+            next();
             // 变量名
             var nameToken = expect(TokenType.Ident);
 
@@ -260,7 +262,8 @@ public final class Analyser {
             String name = (String) nameToken.getValue();
 
             // 下个 token 是等于号吗？如果是的话分析初始化
-            if(nextIf(TokenType.Equal)!=null){
+            if(check(TokenType.Equal)){
+                expect(TokenType.Equal);
                 initialized=true;
                 // 加入符号表，请填写名字和当前位置（报错用）
                 addSymbol(name, true, false, nameToken.getStartPos());
@@ -361,7 +364,7 @@ public final class Analyser {
         // 赋值语句 -> 标识符 '=' 表达式 ';'
 
         // 分析这个语句
-        Token token_now =expect(TokenType.Ident);
+        var token_now =expect(TokenType.Ident);
         // 标识符是什么？
         String name =(String) token_now.getValue();
         var symbol = symbolTable.get(name);
