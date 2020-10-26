@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="37d8599d-8bc7-4e40-b836-09ccfe16e3df" name="Default Changelist" comment="" />
+    <list default="true" id="37d8599d-8bc7-4e40-b836-09ccfe16e3df" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/src/main/java/miniplc0java/analyser/Analyser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/miniplc0java/analyser/Analyser.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -39,7 +41,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1603693377091</updated>
-      <workItem from="1603693383438" duration="4793000" />
+      <workItem from="1603693383438" duration="5078000" />
     </task>
     <servers />
   </component>
@@ -57,7 +59,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="java-method">
           <url>file://$PROJECT_DIR$/src/main/java/miniplc0java/analyser/Analyser.java</url>
-          <line>318</line>
+          <line>313</line>
           <properties class="miniplc0java.analyser.Analyser" method="analyseConstantExpression">
             <option name="EMULATED" value="true" />
           </properties>
@@ -65,7 +67,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-method">
           <url>file://$PROJECT_DIR$/src/main/java/miniplc0java/analyser/Analyser.java</url>
-          <line>289</line>
+          <line>287</line>
           <properties class="miniplc0java.analyser.Analyser" method="analyseStatementSequence">
             <option name="EMULATED" value="true" />
           </properties>
@@ -73,11 +75,19 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-method">
           <url>file://$PROJECT_DIR$/src/main/java/miniplc0java/analyser/Analyser.java</url>
-          <line>364</line>
+          <line>359</line>
           <properties class="miniplc0java.analyser.Analyser" method="analyseAssignmentStatement">
             <option name="EMULATED" value="true" />
           </properties>
           <option name="timeStamp" value="5" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-method">
+          <url>file://$PROJECT_DIR$/src/main/java/miniplc0java/analyser/Analyser.java</url>
+          <line>388</line>
+          <properties class="miniplc0java.analyser.Analyser" method="analyseOutputStatement">
+            <option name="EMULATED" value="true" />
+          </properties>
+          <option name="timeStamp" value="6" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
