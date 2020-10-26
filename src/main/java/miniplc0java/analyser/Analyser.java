@@ -248,40 +248,38 @@ public final class Analyser {
     }
 
     private void analyseVariableDeclaration() throws CompileError {
-        // 示例函数，示例如何解析变量声明 变量声明 -> 变量声明语句*
+        // 变量声明 -> 变量声明语句*
+
         // 如果下一个 token 是 var 就继续
-        while (check(TokenType.Var)) {
+        while (nextIf(TokenType.Var) != null) {
             // 变量声明语句 -> 'var' 变量名 ('=' 表达式)? ';'
-            next();
+
             // 变量名
             var nameToken = expect(TokenType.Ident);
 
             // 变量初始化了吗
             boolean initialized = false;
-
-            // 加入符号表，请填写名字和当前位置（报错用）
             String name = (String) nameToken.getValue();
 
             // 下个 token 是等于号吗？如果是的话分析初始化
-            if(check(TokenType.Equal)) {
-                // 前进一个符号
-                expect(TokenType.Equal);
-                // 变量初始化
-                initialized = true;
-                // 加入符号表
+            if(nextIf(TokenType.Equal)!=null){
+                initialized=true;
+                // 加入符号表，请填写名字和当前位置（报错用）
                 addSymbol(name, true, false, nameToken.getStartPos());
-                // 设置符号已初始化
                 initializeSymbol(name, nameToken.getStartPos());
                 // 分析初始化的表达式
                 analyseExpression();
+
                 // 分号
                 expect(TokenType.Semicolon);
-
             }
+
 
             // 如果没有初始化的话在栈里推入一个初始值
             if (!initialized) {
+                // 加入符号表，请填写名字和当前位置（报错用）
                 addSymbol(name, false, false, nameToken.getStartPos());
+
                 // 分号
                 expect(TokenType.Semicolon);
                 instructions.add(new Instruction(Operation.LIT, 0));
