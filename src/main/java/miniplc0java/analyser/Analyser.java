@@ -187,6 +187,9 @@ public final class Analyser {
         }
     }
 
+    /**
+     * <程序> ::= 'begin'<主过程>'end'
+     */
     private void analyseProgram() throws CompileError {
         // 程序 -> 'begin' 主过程 'end'
         // 示例函数，示例如何调用子程序
@@ -370,10 +373,10 @@ public final class Analyser {
         var symbol = symbolTable.get(name);
         if (symbol == null) {
             // 没有这个标识符
-            throw new AnalyzeError(ErrorCode.NotDeclared, /* 当前位置 */ token_now.getStartPos());
+            throw new AnalyzeError(ErrorCode.NotDeclared, token_now.getStartPos());
         } else if (symbol.isConstant) {
             // 标识符是常量
-            throw new AnalyzeError(ErrorCode.AssignToConstant, /* 当前位置 */ token_now.getStartPos());
+            throw new AnalyzeError(ErrorCode.AssignToConstant, token_now.getStartPos());
         }
         // 设置符号已初始化
         initializeSymbol(name, token_now.getStartPos());
@@ -453,16 +456,16 @@ public final class Analyser {
             var symbol = symbolTable.get(name);
             if (symbol == null) {
                 // 没有这个标识符
-                throw new AnalyzeError(ErrorCode.NotDeclared, /* 当前位置 */ token_now.getStartPos());
+                throw new AnalyzeError(ErrorCode.NotDeclared, token_now.getStartPos());
             } else if (!symbol.isInitialized) {
                 // 标识符没初始化
-                throw new AnalyzeError(ErrorCode.NotInitialized, /* 当前位置 */ token_now.getStartPos());
+                throw new AnalyzeError(ErrorCode.NotInitialized,token_now.getStartPos());
             }
             var offset = getOffset(name, token_now.getStartPos());
             instructions.add(new Instruction(Operation.LOD, offset));
         } else if (check(TokenType.Uint)) {
 
-            var token = expect(TokenType.Uint);
+            Token token = expect(TokenType.Uint);
 
             int value = (int) token.getValue();
             if(negate){
