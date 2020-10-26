@@ -294,7 +294,7 @@ public final class Analyser {
     private void analyseStatementSequence() throws CompileError {
         // 语句序列 -> 语句*
         // 语句 -> 赋值语句 | 输出语句 | 空语句
-        if(check(TokenType.Ident) || check(TokenType.Print) || check(TokenType.None)) {
+        if(check(TokenType.Ident) || check(TokenType.Print) || check(TokenType.Semicolon)) {
             while (true) {
                 // 如果下一个 token 是……
                 var peeked = peek();
