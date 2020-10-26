@@ -364,30 +364,33 @@ public final class Analyser {
 
     private void analyseAssignmentStatement() throws CompileError {
         // 赋值语句 -> 标识符 '=' 表达式 ';'
+        // 变量名 token类型
+        var nameToken = expect(TokenType.Ident);
 
-        // 分析这个语句
-        var token_now =expect(TokenType.Ident);
-        // 标识符是什么？
-        String name =(String) token_now.getValue();
+        // 标识符
+        String name = (String) nameToken.getValue();;
         var symbol = symbolTable.get(name);
         if (symbol == null) {
             // 没有这个标识符
-            throw new AnalyzeError(ErrorCode.NotDeclared,token_now.getStartPos());
+            throw new AnalyzeError(ErrorCode.NotDeclared,nameToken.getStartPos());
         } else if (symbol.isConstant) {
             // 标识符是常量
-            throw new AnalyzeError(ErrorCode.AssignToConstant,token_now.getStartPos());
+            throw new AnalyzeError(ErrorCode.AssignToConstant, nameToken.getStartPos());
         }
         // 设置符号已初始化
-        initializeSymbol(name, token_now.getStartPos());
+        initializeSymbol(name, nameToken.getStartPos());
 
+        // =
         expect(TokenType.Equal);
 
+        // 表达式
         analyseExpression();
 
+        // ;
         expect(TokenType.Semicolon);
 
-        // 保存
-        var offset = getOffset(name, peekedToken.getStartPos());
+        // 把结果保存
+        var offset = getOffset(name, nameToken.getStartPos());
         instructions.add(new Instruction(Operation.STO, offset));
     }
 
