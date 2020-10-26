@@ -216,18 +216,19 @@ public final class Analyser {
     }
 
     private void analyseConstantDeclaration() throws CompileError {
+        // 示例函数，示例如何解析常量声明
         // 常量声明 -> 常量声明语句*
+
         // 如果下一个 token 是 const 就继续
-        while (check(TokenType.Const)) {
+        while (nextIf(TokenType.Const) != null) {
             // 常量声明语句 -> 'const' 变量名 '=' 常表达式 ';'
-            next();
-            // 变量名 token类型
+
+            // 变量名
             var nameToken = expect(TokenType.Ident);
 
             // 加入符号表
             String name = (String) nameToken.getValue();
             addSymbol(name, true, true, nameToken.getStartPos());
-            // 设置符号已初始化
             initializeSymbol(name, nameToken.getStartPos());
 
             // 等于号
@@ -239,7 +240,9 @@ public final class Analyser {
             // 分号
             expect(TokenType.Semicolon);
 
-            // 这里把常量值直接放进栈里
+            // 这里把常量值直接放进栈里，位置和符号表记录的一样。
+            // 更高级的程序还可以把常量的值记录下来，遇到相应的变量直接替换成这个常数值，
+            // 我们这里就先不这么干了。
             instructions.add(new Instruction(Operation.LIT, value));
         }
     }
